@@ -160,6 +160,12 @@ h1, h2, h3, h4, .logo {
   background: linear-gradient(145deg, var(--color-cream) 0%, var(--color-cream-dark) 100%);
 }
 
+main section {
+  position: relative;
+  z-index: 1;
+  isolation: isolate;
+}
+
 /* === HEADER & NAV === */
 .glass-header {
   position: fixed;
@@ -172,7 +178,7 @@ h1, h2, h3, h4, .logo {
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  z-index: 1000;
+  z-index: 9000;
   transition: padding var(--trans-fast), background var(--trans-fast), box-shadow var(--trans-fast);
 }
 
