@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Soy Resort Club | Organic Luxury Wellness</title>
     <meta name="description" content="Rejuvenate your soul at our eco-conscious wellness resort. Experience luxury suites and customized organic spa treatments." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
@@ -16,14 +17,22 @@
     <div id="app">
       <header id="main-header" class="glass-header">
         <div class="logo">Soy<span class="logo-accent">.</span></div>
-        <nav class="nav-links">
+        <button id="hamburger-btn" class="hamburger" aria-label="Toggle navigation menu" aria-expanded="false">
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+          <span class="hamburger-line"></span>
+        </button>
+        <nav id="main-nav" class="nav-links">
           <a href="#hero" class="nav-item">Home</a>
           <a href="#booking" class="nav-item">Booking</a>
           <a href="#suites" class="nav-item">Suites</a>
           <a href="#club" class="nav-item">Club Lounge</a>
         </nav>
-        <button class="cta-btn magnetic-btn">Book Escape</button>
+        <button class="cta-btn magnetic-btn header-cta" onclick="document.getElementById('booking').scrollIntoView({behavior: 'smooth'})">Book Escape</button>
       </header>
+
+      <!-- Mobile Nav Overlay -->
+      <div id="mobile-overlay" class="mobile-overlay"></div>
 
       <main>
         <section id="hero" class="hero">
@@ -37,26 +46,76 @@
             <p class="hero-desc">Experience an organic wellness getaway tailored for the modern luxury traveler.</p>
             <button class="cta-btn cta-large magnetic-btn" onclick="document.getElementById('booking').scrollIntoView({behavior: 'smooth'})">Discover More</button>
           </div>
+          <div class="scroll-indicator">
+            <div class="scroll-mouse">
+              <div class="scroll-wheel"></div>
+            </div>
+            <span>Scroll to explore</span>
+          </div>
+        </section>
+
+        <!-- Stats Bar -->
+        <section class="stats-bar">
+          <div class="container">
+            <div class="stats-grid">
+              <div class="stat-item fade-in-up">
+                <span class="stat-number" data-target="15">0</span><span class="stat-suffix">+</span>
+                <span class="stat-label">Years of Excellence</span>
+              </div>
+              <div class="stat-item fade-in-up">
+                <span class="stat-number" data-target="98">0</span><span class="stat-suffix">%</span>
+                <span class="stat-label">Guest Satisfaction</span>
+              </div>
+              <div class="stat-item fade-in-up">
+                <span class="stat-number" data-target="24">0</span><span class="stat-suffix">/7</span>
+                <span class="stat-label">Wellness Support</span>
+              </div>
+              <div class="stat-item fade-in-up">
+                <span class="stat-number" data-target="50">0</span><span class="stat-suffix">+</span>
+                <span class="stat-label">Organic Treatments</span>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section id="booking" class="booking section-pad glass-wrapper">
           <div class="container">
             <div class="booking-grid">
               <div class="booking-text fade-in-up">
-                <h2 class="section-title">Schedule Your Excursion</h2>
+                <div class="section-tag">Reservations</div>
+                <h2 class="section-title">Schedule Your<br/>Excursion</h2>
                 <p class="section-subtitle">Select dates to book our exclusive Bamboo Deep Tissue Massage or Sunrise Yoga sessions in our organic sanctuary.</p>
                 
                 <div class="eco-features">
-                  <div class="feature-item"><span class="check">🌿</span> 100% Organic Oils</div>
-                  <div class="feature-item"><span class="check">☀️</span> Natural Sunlight Architecture</div>
+                  <div class="feature-item">
+                    <span class="feature-icon">🌿</span>
+                    <div>
+                      <strong>100% Organic Oils</strong>
+                      <span>Cold-pressed, sustainably sourced</span>
+                    </div>
+                  </div>
+                  <div class="feature-item">
+                    <span class="feature-icon">☀️</span>
+                    <div>
+                      <strong>Natural Sunlight Architecture</strong>
+                      <span>Biophilic design principles</span>
+                    </div>
+                  </div>
+                  <div class="feature-item">
+                    <span class="feature-icon">🧘</span>
+                    <div>
+                      <strong>Expert Wellness Guides</strong>
+                      <span>Certified holistic practitioners</span>
+                    </div>
+                  </div>
                 </div>
               </div>
               
               <div class="calendar-wrapper glass-card fade-in-up">
                 <div class="calendar-header">
-                  <button id="prev-month" class="nav-btn">&laquo;</button>
+                  <button id="prev-month" class="nav-btn" aria-label="Previous month">&laquo;</button>
                   <span id="month-display"></span>
-                  <button id="next-month" class="nav-btn">&raquo;</button>
+                  <button id="next-month" class="nav-btn" aria-label="Next month">&raquo;</button>
                 </div>
                 <div class="calendar-grid" id="calendar-grid"></div>
                 <div id="selected-date-info" class="selected-date-info hidden">
@@ -76,6 +135,13 @@
                       </div>
                       <button class="book-small-btn magnetic-btn">Reserve</button>
                     </div>
+                    <div class="excursion-item">
+                      <div class="excursion-info">
+                        <strong>Crystal Sound Bath</strong>
+                        <em>45 min | Meditation Cave</em>
+                      </div>
+                      <button class="book-small-btn magnetic-btn">Reserve</button>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -86,8 +152,9 @@
         <section id="suites" class="gallery section-pad">
           <div class="container fade-in-up">
             <div class="gallery-header">
+              <div class="section-tag">Accommodation</div>
               <h2 class="section-title">Eco-Friendly Suites</h2>
-              <p class="section-subtitle">Rest in thoughtfully designed organic spaces.</p>
+              <p class="section-subtitle center">Rest in thoughtfully designed organic spaces blending nature with luxury.</p>
             </div>
             <div class="masonry-grid stagger-wrapper">
               <div class="gallery-item large stagger-item" style="--delay: 1">
@@ -95,6 +162,7 @@
                 <div class="overlay glass-overlay">
                   <h3>The Bamboo Suite</h3>
                   <p>Panoramic nature views.</p>
+                  <span class="price-tag">From $450/night</span>
                 </div>
               </div>
               <div class="gallery-item stagger-item" style="--delay: 2">
@@ -102,6 +170,7 @@
                 <div class="overlay glass-overlay">
                   <h3>The Ocean Villa</h3>
                   <p>Unobstructed coastal panoramas.</p>
+                  <span class="price-tag">From $680/night</span>
                 </div>
               </div>
             </div>
@@ -111,8 +180,9 @@
         <section id="club" class="gallery section-pad bg-organic">
           <div class="container fade-in-up">
             <div class="gallery-header">
+              <div class="section-tag">Members Only</div>
               <h2 class="section-title">Private Club Lounge</h2>
-              <p class="section-subtitle">A sanctuary of exclusive relaxation.</p>
+              <p class="section-subtitle center">A sanctuary of exclusive relaxation and botanical refreshments.</p>
             </div>
             <div class="gallery-grid full-width">
               <div class="gallery-item">
@@ -128,22 +198,49 @@
 
         <section id="trust" class="trust section-pad">
           <div class="container fade-in-up">
-            <h2 class="section-title text-center">Guest Testimonials</h2>
+            <div class="gallery-header">
+              <div class="section-tag">Reviews</div>
+              <h2 class="section-title text-center">Guest Testimonials</h2>
+            </div>
             <div class="testimonials">
               <div class="testimonial-card glass-card">
                 <div class="stars">★★★★★</div>
                 <p>"The absolute pinnacle of mindful luxury. The spa treatments left me entirely rejuvenated."</p>
-                <h4>Elena M. <span>- Visionary</span></h4>
+                <div class="testimonial-author">
+                  <div class="author-avatar">EM</div>
+                  <div>
+                    <h4>Elena M.</h4>
+                    <span>Visionary & Founder</span>
+                  </div>
+                </div>
               </div>
               <div class="testimonial-card glass-card">
                 <div class="stars">★★★★★</div>
                 <p>"Stunning architecture intertwined with nature. A haven for peace and wellness."</p>
-                <h4>James T. <span>- Architect</span></h4>
+                <div class="testimonial-author">
+                  <div class="author-avatar">JT</div>
+                  <div>
+                    <h4>James T.</h4>
+                    <span>Architect & Designer</span>
+                  </div>
+                </div>
+              </div>
+              <div class="testimonial-card glass-card">
+                <div class="stars">★★★★★</div>
+                <p>"Every detail speaks of intentional luxury. An absolutely transcendent experience."</p>
+                <div class="testimonial-author">
+                  <div class="author-avatar">SL</div>
+                  <div>
+                    <h4>Sarah L.</h4>
+                    <span>Travel Journalist</span>
+                  </div>
+                </div>
               </div>
             </div>
             <div class="eco-badges">
               <div class="badge glow-hover">LEED Platinum Certified</div>
               <div class="badge glow-hover">100% Organic Sourcing</div>
+              <div class="badge glow-hover">Carbon Neutral Since 2020</div>
             </div>
           </div>
         </section>
@@ -154,22 +251,36 @@
           <div class="footer-layout">
             <div class="brand">
               <h3 class="logo">Soy<span class="logo-accent">.</span></h3>
-              <p>Rejuvenate your soul.</p>
+              <p class="footer-tagline">Rejuvenate your soul.</p>
+              <div class="social-links">
+                <a href="#" class="social-icon" aria-label="Instagram">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
+                </a>
+                <a href="#" class="social-icon" aria-label="Twitter">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
+                </a>
+                <a href="#" class="social-icon" aria-label="Facebook">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+                </a>
+              </div>
             </div>
             <div class="links">
               <h4>Sanctuary</h4>
               <p><a href="#booking">Book Excursions</a></p>
               <p><a href="#suites">Our Suites</a></p>
+              <p><a href="#club">Club Lounge</a></p>
             </div>
             <div class="contact">
               <h4>Contact</h4>
               <p>info@soyresort.club</p>
               <p>1-800-RELAX-SOY</p>
+              <p>Soy Valley, Kenya</p>
             </div>
             <div class="newsletter">
               <h4>Membership Inquiries</h4>
+              <p class="newsletter-desc">Join our exclusive community for special offers and wellness insights.</p>
               <div class="input-group">
-                <input type="email" placeholder="Email Address" title="Newsletter Email" />
+                <input type="email" placeholder="Email Address" title="Newsletter Email" id="newsletter-email" />
                 <button class="magnetic-btn">Join</button>
               </div>
             </div>
