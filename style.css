@@ -14,6 +14,12 @@
   --color-accent: #C2A875;
   --color-accent-light: #D4BF96;
   
+  /* Status Colors */
+  --color-success: #4CAF50;
+  --color-warning: #FF9800;
+  --color-danger: #E53935;
+  --color-info: #2196F3;
+
   /* Typography */
   --font-heading: 'Outfit', sans-serif;
   --font-body: 'Inter', sans-serif;
@@ -319,6 +325,8 @@ main section {
   box-shadow: 0 6px 30px rgba(129, 152, 112, 0.35);
 }
 .cta-large:hover { background-color: var(--color-sage-deep); }
+
+.full-width { width: 100%; }
 
 .book-small-btn {
   background-color: var(--color-sage);
@@ -706,6 +714,758 @@ main section {
   color: var(--color-sage);
 }
 
+/* =============================================================
+   ROOMS SECTION
+   ============================================================= */
+.rooms {
+  background: linear-gradient(180deg, var(--color-cream) 0%, var(--color-cream-dark) 100%);
+}
+
+.rooms-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 2rem;
+}
+
+.room-card {
+  border-radius: 24px;
+  overflow: hidden;
+  transition: transform var(--trans-fast), box-shadow var(--trans-fast);
+}
+
+.room-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+}
+
+.room-image-wrap {
+  position: relative;
+  overflow: hidden;
+  height: 260px;
+}
+
+.room-image-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 1.2s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.room-card:hover .room-image-wrap img {
+  transform: scale(1.08);
+}
+
+.room-badge {
+  position: absolute;
+  top: 1rem;
+  right: 1rem;
+  background: var(--color-sage);
+  color: white;
+  padding: 0.35rem 1rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  z-index: 2;
+}
+
+.room-badge.accent {
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-light));
+  color: var(--color-wood-dark);
+}
+
+.room-details {
+  padding: 1.75rem;
+  position: relative;
+  z-index: 1;
+}
+
+.room-details h3 {
+  font-size: 1.35rem;
+  font-weight: 500;
+  margin-bottom: 0.75rem;
+}
+
+.room-meta {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.room-meta-item {
+  font-size: 0.85rem;
+  color: var(--color-wood-light);
+  display: flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.room-amenities {
+  list-style: none;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.4rem;
+  margin-bottom: 1.5rem;
+}
+
+.room-amenities li {
+  font-size: 0.85rem;
+  color: var(--color-wood-light);
+  position: relative;
+  padding-left: 1rem;
+}
+
+.room-amenities li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: var(--color-sage);
+  font-weight: 600;
+  font-size: 0.8rem;
+}
+
+.room-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1.25rem;
+  border-top: 1px solid rgba(0,0,0,0.06);
+}
+
+.room-price {
+  display: flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+.price-amount {
+  font-family: var(--font-heading);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--color-wood-dark);
+}
+
+.price-period {
+  font-size: 0.85rem;
+  color: var(--color-wood-light);
+}
+
+.room-book-btn {
+  font-size: 0.85rem;
+  padding: 0.65rem 1.6rem;
+  background-color: var(--color-sage);
+}
+
+.room-book-btn:hover {
+  background-color: var(--color-sage-deep);
+}
+
+/* =============================================================
+   BOOKING MODAL
+   ============================================================= */
+.booking-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.booking-modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.booking-modal-overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(30, 28, 26, 0.6);
+  backdrop-filter: blur(8px);
+}
+
+.booking-modal-content {
+  position: relative;
+  z-index: 1;
+  width: 90%;
+  max-width: 640px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 3rem;
+  border-radius: 28px;
+  transform: translateY(30px) scale(0.95);
+  transition: transform 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.booking-modal.active .booking-modal-content {
+  transform: translateY(0) scale(1);
+}
+
+.modal-close {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(0,0,0,0.05);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--trans-fast);
+  z-index: 10;
+  color: var(--color-wood-dark);
+}
+
+.modal-close:hover {
+  background: rgba(0,0,0,0.1);
+  transform: rotate(90deg);
+}
+
+.modal-header {
+  margin-bottom: 2rem;
+}
+
+.selected-room-pill {
+  display: inline-block;
+  background: var(--color-sage);
+  color: white;
+  padding: 0.4rem 1.2rem;
+  border-radius: 50px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  margin-top: 0.5rem;
+}
+
+.booking-step {
+  display: none;
+}
+
+.booking-step.active {
+  display: block;
+  animation: slideDown 0.4s ease;
+}
+
+.booking-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  position: relative;
+  z-index: 1;
+}
+
+.form-group label {
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-wood-light);
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 0.85rem 1.2rem;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  border-radius: 14px;
+  font-family: var(--font-body);
+  font-size: 0.95rem;
+  background: rgba(255,255,255,0.7);
+  color: var(--color-charcoal);
+  transition: border-color var(--trans-fast), box-shadow var(--trans-fast);
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: var(--color-sage);
+  box-shadow: 0 0 0 3px rgba(129, 152, 112, 0.12);
+}
+
+.form-group textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.booking-summary {
+  padding: 1.5rem;
+  border-radius: 16px;
+  margin-top: 0.5rem;
+  background: rgba(129, 152, 112, 0.06);
+  border: 1px solid rgba(129, 152, 112, 0.15);
+}
+
+.booking-summary::before {
+  display: none;
+}
+
+.summary-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 0.5rem 0;
+  font-size: 0.95rem;
+  color: var(--color-wood-light);
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+}
+
+.summary-row:last-child {
+  border-bottom: none;
+}
+
+.summary-row.total {
+  font-weight: 600;
+  font-size: 1.15rem;
+  color: var(--color-wood-dark);
+  padding-top: 0.75rem;
+  margin-top: 0.25rem;
+  border-top: 2px solid rgba(0,0,0,0.08);
+}
+
+/* Confirmation */
+.confirmation-content {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.confirmation-icon {
+  margin-bottom: 0.5rem;
+  animation: confirmPop 0.5s ease;
+}
+
+@keyframes confirmPop {
+  0% { transform: scale(0); }
+  60% { transform: scale(1.15); }
+  100% { transform: scale(1); }
+}
+
+.confirmation-desc {
+  color: var(--color-wood-light);
+  font-size: 1rem;
+  max-width: 380px;
+}
+
+.booking-ref {
+  padding: 1.5rem 2.5rem;
+  border-radius: 16px;
+  text-align: center;
+  margin: 0.5rem 0;
+}
+
+.booking-ref::before { display: none; }
+
+.ref-label {
+  display: block;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--color-wood-light);
+  margin-bottom: 0.5rem;
+}
+
+.ref-number {
+  font-family: var(--font-heading);
+  font-size: 1.8rem;
+  font-weight: 600;
+  color: var(--color-sage-deep);
+  letter-spacing: 0.05em;
+}
+
+.confirmation-details {
+  text-align: left;
+  width: 100%;
+  max-width: 380px;
+  font-size: 0.9rem;
+  color: var(--color-wood-light);
+  line-height: 1.8;
+}
+
+/* PIN Modal */
+.crm-pin-dialog {
+  max-width: 400px;
+  padding: 3rem;
+  text-align: center;
+}
+
+.pin-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  z-index: 1;
+}
+
+.pin-input-group {
+  width: 100%;
+  max-width: 200px;
+}
+
+.pin-input {
+  width: 100%;
+  padding: 1rem;
+  text-align: center;
+  font-size: 1.8rem;
+  font-family: var(--font-heading);
+  font-weight: 600;
+  letter-spacing: 0.5em;
+  border: 2px solid rgba(0,0,0,0.1);
+  border-radius: 16px;
+  background: rgba(255,255,255,0.7);
+  outline: none;
+  transition: border-color var(--trans-fast);
+}
+
+.pin-input:focus {
+  border-color: var(--color-sage);
+}
+
+.pin-error {
+  color: var(--color-danger);
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+/* =============================================================
+   CRM DASHBOARD
+   ============================================================= */
+.crm-dashboard {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  z-index: 10002;
+  background: var(--color-cream);
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 0.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.crm-dashboard.active {
+  transform: translateY(0);
+}
+
+.crm-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 3rem;
+  background: var(--color-wood-dark);
+  color: var(--color-cream);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.crm-header .logo {
+  color: var(--color-cream);
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.crm-badge {
+  font-size: 0.7rem;
+  background: var(--color-sage);
+  color: white;
+  padding: 0.25rem 0.75rem;
+  border-radius: 50px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.crm-body {
+  padding: 2rem 3rem 4rem;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* CRM Stats */
+.crm-stats {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin-bottom: 2.5rem;
+}
+
+.crm-stat-card {
+  padding: 1.75rem;
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  border-radius: 20px;
+  transition: transform var(--trans-fast);
+}
+
+.crm-stat-card:hover {
+  transform: translateY(-3px);
+}
+
+.crm-stat-icon {
+  font-size: 2rem;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(129, 152, 112, 0.1);
+  border-radius: 16px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.crm-stat-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  position: relative;
+  z-index: 1;
+}
+
+.crm-stat-value {
+  font-family: var(--font-heading);
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--color-wood-dark);
+}
+
+.crm-stat-label {
+  font-size: 0.8rem;
+  color: var(--color-wood-light);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+/* CRM Tabs */
+.crm-tabs {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1.5rem;
+  background: rgba(0,0,0,0.03);
+  padding: 0.3rem;
+  border-radius: 14px;
+  width: fit-content;
+}
+
+.crm-tab {
+  padding: 0.7rem 1.8rem;
+  border: none;
+  background: none;
+  font-family: var(--font-heading);
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-wood-light);
+  cursor: pointer;
+  border-radius: 11px;
+  transition: all var(--trans-fast);
+}
+
+.crm-tab.active {
+  background: var(--color-white);
+  color: var(--color-wood-dark);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.crm-tab:hover:not(.active) {
+  color: var(--color-wood-dark);
+}
+
+.crm-tab-content {
+  display: none;
+}
+
+.crm-tab-content.active {
+  display: block;
+  animation: slideDown 0.3s ease;
+}
+
+/* CRM Toolbar */
+.crm-toolbar {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.crm-search {
+  flex: 1;
+  min-width: 220px;
+  padding: 0.75rem 1.25rem;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  background: var(--color-white);
+  outline: none;
+  transition: border-color var(--trans-fast);
+}
+
+.crm-search:focus {
+  border-color: var(--color-sage);
+}
+
+.crm-filter {
+  padding: 0.75rem 1.25rem;
+  border: 1.5px solid rgba(0,0,0,0.08);
+  border-radius: 12px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  background: var(--color-white);
+  outline: none;
+  cursor: pointer;
+}
+
+.crm-export-btn {
+  font-size: 0.85rem;
+  padding: 0.7rem 1.5rem;
+}
+
+/* CRM Table */
+.crm-table-wrap {
+  overflow-x: auto;
+  border-radius: 16px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: var(--color-white);
+}
+
+.crm-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+.crm-table thead {
+  background: rgba(0,0,0,0.02);
+}
+
+.crm-table th {
+  padding: 1rem 1.25rem;
+  text-align: left;
+  font-weight: 600;
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--color-wood-light);
+  border-bottom: 1px solid rgba(0,0,0,0.06);
+}
+
+.crm-table td {
+  padding: 1rem 1.25rem;
+  border-bottom: 1px solid rgba(0,0,0,0.04);
+  color: var(--color-wood-dark);
+  vertical-align: middle;
+}
+
+.crm-table tbody tr {
+  transition: background var(--trans-fast);
+}
+
+.crm-table tbody tr:hover {
+  background: rgba(129, 152, 112, 0.04);
+}
+
+.crm-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+/* Status Badges */
+.status-badge {
+  display: inline-block;
+  padding: 0.3rem 0.85rem;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.status-confirmed {
+  background: rgba(76, 175, 80, 0.12);
+  color: #2E7D32;
+}
+
+.status-checked-in {
+  background: rgba(33, 150, 243, 0.12);
+  color: #1565C0;
+}
+
+.status-checked-out {
+  background: rgba(158, 158, 158, 0.15);
+  color: #616161;
+}
+
+.status-cancelled {
+  background: rgba(229, 57, 53, 0.1);
+  color: #C62828;
+}
+
+/* CRM Action Buttons */
+.crm-action-btn {
+  background: none;
+  border: 1px solid rgba(0,0,0,0.1);
+  padding: 0.35rem 0.75rem;
+  border-radius: 8px;
+  font-size: 0.75rem;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all var(--trans-fast);
+  margin-right: 0.35rem;
+}
+
+.crm-action-btn:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.crm-action-btn.danger {
+  color: var(--color-danger);
+  border-color: rgba(229, 57, 53, 0.2);
+}
+
+.crm-action-btn.danger:hover {
+  background: rgba(229, 57, 53, 0.06);
+}
+
+.crm-empty {
+  text-align: center;
+  padding: 3rem;
+  color: var(--color-wood-light);
+  font-size: 0.95rem;
+}
+
+/* Admin Link */
+.admin-link {
+  display: inline-block;
+  margin-top: 1rem;
+  font-size: 0.8rem;
+  color: rgba(245, 243, 237, 0.4);
+  transition: color var(--trans-fast);
+}
+
+.admin-link:hover {
+  color: var(--color-sage-light);
+}
+
 /* === GALLERY / MASONRY === */
 .masonry-grid {
   display: grid;
@@ -1011,6 +1771,10 @@ main section {
   .footer-layout { grid-template-columns: 1fr 1fr; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 2rem; }
   .masonry-grid { grid-template-columns: 1fr 1fr; }
+  .rooms-grid { grid-template-columns: 1fr 1fr; }
+  .crm-stats { grid-template-columns: repeat(2, 1fr); }
+  .crm-body { padding: 2rem 2rem 4rem; }
+  .crm-header { padding: 1rem 2rem; }
 }
 
 /* Mobile */
@@ -1080,6 +1844,22 @@ main section {
   body { cursor: auto; }
   
   .scroll-indicator { bottom: 1.5rem; }
+
+  /* Rooms */
+  .rooms-grid { grid-template-columns: 1fr; }
+  .room-image-wrap { height: 220px; }
+
+  /* Booking Modal */
+  .booking-modal-content { padding: 2rem 1.5rem; max-height: 95vh; }
+  .form-row { grid-template-columns: 1fr; }
+
+  /* CRM */
+  .crm-stats { grid-template-columns: 1fr 1fr; }
+  .crm-body { padding: 1.5rem 1.25rem 3rem; }
+  .crm-header { padding: 1rem 1.25rem; }
+  .crm-toolbar { flex-direction: column; }
+  .crm-table { font-size: 0.8rem; }
+  .crm-table th, .crm-table td { padding: 0.75rem 0.75rem; }
 }
 
 @media (max-width: 480px) {
@@ -1087,6 +1867,7 @@ main section {
   .stats-bar { padding: 2.5rem 0; }
   .stat-number, .stat-suffix { font-size: 1.75rem; }
   .section-title { font-size: clamp(1.5rem, 6vw, 2rem); }
+  .crm-stats { grid-template-columns: 1fr; }
 }
 
 /* Touch device cursor hide */

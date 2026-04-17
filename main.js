@@ -29,7 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     animateFollower();
 
     // Hover effect on interactive elements
-    const interactives = document.querySelectorAll('a, button, .cal-day:not(.empty), input, .gallery-item');
+    const interactives = document.querySelectorAll('a, button, .cal-day:not(.empty), input, .gallery-item, .room-card');
     interactives.forEach(el => {
       el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
       el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
@@ -276,4 +276,492 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }, { passive: true });
   }
+
+  // =============================================================
+  //  BOOKING SYSTEM
+  // =============================================================
+
+  // === HTML SANITIZER (XSS Prevention) ===
+  function escapeHtml(str) {
+    if (str == null) return '';
+    const div = document.createElement('div');
+    div.appendChild(document.createTextNode(String(str)));
+    return div.innerHTML;
+  }
+
+  const ROOM_RATE = 2500;
+  const bookingModal = document.getElementById('booking-modal');
+  const bookingModalOverlay = bookingModal.querySelector('.booking-modal-overlay');
+  const bookingModalClose = document.getElementById('booking-modal-close');
+  const bookingForm = document.getElementById('booking-form');
+  const step1 = document.getElementById('booking-step-1');
+  const step2 = document.getElementById('booking-step-2');
+  const selectedRoomDisplay = document.getElementById('selected-room-display');
+  const summaryRoom = document.getElementById('summary-room');
+  const summaryNights = document.getElementById('summary-nights');
+  const summaryTotal = document.getElementById('summary-total');
+  const checkinInput = document.getElementById('checkin-date');
+  const checkoutInput = document.getElementById('checkout-date');
+  const bookingRefNumber = document.getElementById('booking-ref-number');
+  const confirmationDetails = document.getElementById('confirmation-details');
+  const closeConfirmation = document.getElementById('close-confirmation');
+
+  let selectedRoom = '';
+  let selectedRoomName = '';
+
+  // Set minimum date to today
+  const todayStr = today.toISOString().split('T')[0];
+  checkinInput.min = todayStr;
+  checkoutInput.min = todayStr;
+
+  // Open booking modal
+  document.querySelectorAll('.room-book-btn').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      selectedRoom = btn.dataset.room;
+      selectedRoomName = btn.dataset.roomName;
+      selectedRoomDisplay.textContent = selectedRoomName;
+      summaryRoom.textContent = selectedRoomName;
+      openModal(bookingModal);
+      step1.classList.add('active');
+      step2.classList.remove('active');
+    });
+  });
+
+  function openModal(modal) {
+    modal.classList.add('active');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal(modal) {
+    modal.classList.remove('active');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  bookingModalClose.addEventListener('click', () => closeModal(bookingModal));
+  bookingModalOverlay.addEventListener('click', () => closeModal(bookingModal));
+  closeConfirmation.addEventListener('click', () => closeModal(bookingModal));
+
+  // Calculate nights and total
+  function updateSummary() {
+    const checkin = new Date(checkinInput.value);
+    const checkout = new Date(checkoutInput.value);
+    if (checkinInput.value && checkoutInput.value && checkout > checkin) {
+      const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+      const total = nights * ROOM_RATE;
+      summaryNights.textContent = `${nights} night${nights > 1 ? 's' : ''}`;
+      summaryTotal.textContent = `KES ${total.toLocaleString()}`;
+    } else {
+      summaryNights.textContent = '—';
+      summaryTotal.textContent = 'KES 0';
+    }
+  }
+
+  checkinInput.addEventListener('change', () => {
+    // Auto-set checkout min to day after checkin
+    if (checkinInput.value) {
+      const nextDay = new Date(checkinInput.value);
+      nextDay.setDate(nextDay.getDate() + 1);
+      checkoutInput.min = nextDay.toISOString().split('T')[0];
+      if (checkoutInput.value && new Date(checkoutInput.value) <= new Date(checkinInput.value)) {
+        checkoutInput.value = nextDay.toISOString().split('T')[0];
+      }
+    }
+    updateSummary();
+  });
+
+  checkoutInput.addEventListener('change', updateSummary);
+
+  // Generate booking reference
+  function generateRef() {
+    const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+    let ref = 'SOY-';
+    for (let i = 0; i < 6; i++) {
+      ref += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    return ref;
+  }
+
+  // Submit booking
+  bookingForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+
+    const checkin = new Date(checkinInput.value);
+    const checkout = new Date(checkoutInput.value);
+
+    if (checkout <= checkin) {
+      alert('Check-out date must be after check-in date.');
+      return;
+    }
+
+    const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+    const total = nights * ROOM_RATE;
+    const ref = generateRef();
+
+    const booking = {
+      id: Date.now().toString(),
+      ref: ref,
+      guestName: document.getElementById('guest-name').value.trim(),
+      guestEmail: document.getElementById('guest-email').value.trim(),
+      guestPhone: document.getElementById('guest-phone').value.trim(),
+      guestCount: parseInt(document.getElementById('guest-count').value),
+      room: selectedRoomName,
+      roomType: selectedRoom,
+      checkin: checkinInput.value,
+      checkout: checkoutInput.value,
+      nights: nights,
+      total: total,
+      specialRequests: document.getElementById('special-requests').value.trim(),
+      status: 'confirmed',
+      createdAt: new Date().toISOString()
+    };
+
+    // Save to localStorage
+    saveBooking(booking);
+
+    // Show confirmation (sanitized against XSS)
+    bookingRefNumber.textContent = ref;
+    confirmationDetails.innerHTML = `
+      <strong>Guest:</strong> ${escapeHtml(booking.guestName)}<br>
+      <strong>Room:</strong> ${escapeHtml(booking.room)}<br>
+      <strong>Check-in:</strong> ${escapeHtml(formatDate(booking.checkin))}<br>
+      <strong>Check-out:</strong> ${escapeHtml(formatDate(booking.checkout))}<br>
+      <strong>Duration:</strong> ${nights} night${nights > 1 ? 's' : ''}<br>
+      <strong>Total:</strong> KES ${total.toLocaleString()}
+    `;
+
+    step1.classList.remove('active');
+    step2.classList.add('active');
+
+    // Reset form
+    bookingForm.reset();
+    summaryNights.textContent = '—';
+    summaryTotal.textContent = 'KES 0';
+  });
+
+  // =============================================================
+  //  LOCAL STORAGE CRUD
+  // =============================================================
+
+  function getBookings() {
+    try {
+      return JSON.parse(localStorage.getItem('soy_bookings')) || [];
+    } catch {
+      return [];
+    }
+  }
+
+  function saveBooking(booking) {
+    const bookings = getBookings();
+    bookings.push(booking);
+    localStorage.setItem('soy_bookings', JSON.stringify(bookings));
+  }
+
+  function updateBookingStatus(id, status) {
+    const bookings = getBookings();
+    const index = bookings.findIndex(b => b.id === id);
+    if (index !== -1) {
+      bookings[index].status = status;
+      localStorage.setItem('soy_bookings', JSON.stringify(bookings));
+    }
+  }
+
+  function deleteBooking(id) {
+    let bookings = getBookings();
+    bookings = bookings.filter(b => b.id !== id);
+    localStorage.setItem('soy_bookings', JSON.stringify(bookings));
+  }
+
+  function formatDate(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+  }
+
+  // =============================================================
+  //  CRM DASHBOARD
+  // =============================================================
+
+  const CRM_PIN = '1234';
+  let pinAttempts = 0;
+  const MAX_PIN_ATTEMPTS = 3;
+  let pinLockoutUntil = 0;
+  const crmPinModal = document.getElementById('crm-pin-modal');
+  const crmPinOverlay = crmPinModal.querySelector('.booking-modal-overlay');
+  const crmPinClose = crmPinModal.querySelector('.crm-pin-close');
+  const crmPinInput = document.getElementById('crm-pin');
+  const crmPinSubmit = document.getElementById('pin-submit');
+  const pinError = document.getElementById('pin-error');
+  const crmDashboard = document.getElementById('crm-dashboard');
+  const crmCloseBtn = document.getElementById('crm-close');
+  const crmAdminLink = document.getElementById('crm-admin-link');
+
+  // Open CRM via admin link
+  crmAdminLink.addEventListener('click', (e) => {
+    e.preventDefault();
+    openModal(crmPinModal);
+    crmPinInput.value = '';
+    pinError.classList.add('hidden');
+    setTimeout(() => crmPinInput.focus(), 300);
+  });
+
+  // PIN close
+  crmPinClose.addEventListener('click', () => closeModal(crmPinModal));
+  crmPinOverlay.addEventListener('click', () => closeModal(crmPinModal));
+
+  // PIN submit
+  crmPinSubmit.addEventListener('click', () => attemptPinLogin());
+  crmPinInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') attemptPinLogin();
+  });
+
+  function attemptPinLogin() {
+    // Rate limiting: block if locked out
+    if (Date.now() < pinLockoutUntil) {
+      const secsLeft = Math.ceil((pinLockoutUntil - Date.now()) / 1000);
+      pinError.textContent = `Too many attempts. Try again in ${secsLeft}s.`;
+      pinError.classList.remove('hidden');
+      return;
+    }
+
+    if (crmPinInput.value === CRM_PIN) {
+      pinAttempts = 0;
+      closeModal(crmPinModal);
+      openCRM();
+    } else {
+      pinAttempts++;
+      if (pinAttempts >= MAX_PIN_ATTEMPTS) {
+        pinLockoutUntil = Date.now() + 30000; // 30-second lockout
+        pinError.textContent = 'Too many attempts. Locked for 30 seconds.';
+        pinAttempts = 0;
+      } else {
+        pinError.textContent = `Incorrect PIN. ${MAX_PIN_ATTEMPTS - pinAttempts} attempt(s) remaining.`;
+      }
+      pinError.classList.remove('hidden');
+      crmPinInput.value = '';
+      crmPinInput.focus();
+    }
+  }
+
+  function openCRM() {
+    crmDashboard.classList.add('active');
+    crmDashboard.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    refreshCRM();
+  }
+
+  function closeCRM() {
+    crmDashboard.classList.remove('active');
+    crmDashboard.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  crmCloseBtn.addEventListener('click', closeCRM);
+
+  // CRM Tabs
+  document.querySelectorAll('.crm-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.crm-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.crm-tab-content').forEach(c => c.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(`tab-${tab.dataset.tab}`).classList.add('active');
+    });
+  });
+
+  // Refresh CRM Data
+  function refreshCRM() {
+    const bookings = getBookings();
+
+    // Stats
+    document.getElementById('crm-total-bookings').textContent = bookings.length;
+
+    const totalRevenue = bookings
+      .filter(b => b.status !== 'cancelled')
+      .reduce((sum, b) => sum + (b.total || 0), 0);
+    document.getElementById('crm-total-revenue').textContent = `KES ${totalRevenue.toLocaleString()}`;
+
+    const pending = bookings.filter(b => b.status === 'confirmed').length;
+    document.getElementById('crm-pending').textContent = pending;
+
+    const uniqueGuests = [...new Set(bookings.map(b => b.guestEmail))];
+    document.getElementById('crm-total-guests').textContent = uniqueGuests.length;
+
+    // Bookings Table
+    renderBookingsTable(bookings);
+
+    // Guests Table
+    renderGuestsTable(bookings);
+  }
+
+  function renderBookingsTable(bookings, filter = 'all', search = '') {
+    const tbody = document.getElementById('crm-bookings-body');
+    const empty = document.getElementById('crm-empty-bookings');
+    const table = document.getElementById('crm-bookings-table');
+
+    let filtered = bookings;
+    if (filter !== 'all') {
+      filtered = filtered.filter(b => b.status === filter);
+    }
+    if (search) {
+      const s = search.toLowerCase();
+      filtered = filtered.filter(b =>
+        b.guestName.toLowerCase().includes(s) ||
+        b.ref.toLowerCase().includes(s) ||
+        b.room.toLowerCase().includes(s) ||
+        b.guestEmail.toLowerCase().includes(s)
+      );
+    }
+
+    if (filtered.length === 0) {
+      table.style.display = 'none';
+      empty.style.display = 'block';
+    } else {
+      table.style.display = 'table';
+      empty.style.display = 'none';
+    }
+
+    tbody.innerHTML = filtered.map(b => `
+      <tr>
+        <td><strong>${escapeHtml(b.ref)}</strong></td>
+        <td>${escapeHtml(b.guestName)}</td>
+        <td>${escapeHtml(b.room)}</td>
+        <td>${escapeHtml(formatDate(b.checkin))}</td>
+        <td>${escapeHtml(formatDate(b.checkout))}</td>
+        <td>KES ${(b.total || 0).toLocaleString()}</td>
+        <td><span class="status-badge status-${escapeHtml(b.status)}">${escapeHtml(b.status.replace('-', ' '))}</span></td>
+        <td>
+          ${b.status === 'confirmed' ? `<button class="crm-action-btn" data-id="${escapeHtml(b.id)}" data-action="checked-in">Check In</button>` : ''}
+          ${b.status === 'checked-in' ? `<button class="crm-action-btn" data-id="${escapeHtml(b.id)}" data-action="checked-out">Check Out</button>` : ''}
+          ${b.status !== 'cancelled' && b.status !== 'checked-out' ? `<button class="crm-action-btn danger" data-id="${escapeHtml(b.id)}" data-action="cancelled">Cancel</button>` : ''}
+          <button class="crm-action-btn danger" data-id="${escapeHtml(b.id)}" data-action="delete">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+
+    // Bind action buttons
+    tbody.querySelectorAll('.crm-action-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const id = btn.dataset.id;
+        const action = btn.dataset.action;
+        if (action === 'delete') {
+          if (confirm('Delete this booking permanently?')) {
+            deleteBooking(id);
+            refreshCRM();
+          }
+        } else {
+          updateBookingStatus(id, action);
+          refreshCRM();
+        }
+      });
+    });
+  }
+
+  function renderGuestsTable(bookings, search = '') {
+    const tbody = document.getElementById('crm-guests-body');
+    const empty = document.getElementById('crm-empty-guests');
+    const table = document.getElementById('crm-guests-table');
+
+    // Group by email
+    const guestMap = {};
+    bookings.forEach(b => {
+      if (!guestMap[b.guestEmail]) {
+        guestMap[b.guestEmail] = {
+          name: b.guestName,
+          email: b.guestEmail,
+          phone: b.guestPhone,
+          bookings: 0,
+          spent: 0
+        };
+      }
+      guestMap[b.guestEmail].bookings++;
+      if (b.status !== 'cancelled') {
+        guestMap[b.guestEmail].spent += (b.total || 0);
+      }
+    });
+
+    let guests = Object.values(guestMap);
+
+    if (search) {
+      const s = search.toLowerCase();
+      guests = guests.filter(g =>
+        g.name.toLowerCase().includes(s) ||
+        g.email.toLowerCase().includes(s) ||
+        g.phone.toLowerCase().includes(s)
+      );
+    }
+
+    if (guests.length === 0) {
+      table.style.display = 'none';
+      empty.style.display = 'block';
+    } else {
+      table.style.display = 'table';
+      empty.style.display = 'none';
+    }
+
+    tbody.innerHTML = guests.map(g => `
+      <tr>
+        <td><strong>${escapeHtml(g.name)}</strong></td>
+        <td>${escapeHtml(g.email)}</td>
+        <td>${escapeHtml(g.phone)}</td>
+        <td>${g.bookings}</td>
+        <td>KES ${g.spent.toLocaleString()}</td>
+      </tr>
+    `).join('');
+  }
+
+  // CRM Search & Filter
+  const searchBookings = document.getElementById('crm-search-bookings');
+  const filterStatus = document.getElementById('crm-filter-status');
+  const searchGuests = document.getElementById('crm-search-guests');
+
+  searchBookings.addEventListener('input', () => {
+    renderBookingsTable(getBookings(), filterStatus.value, searchBookings.value);
+  });
+
+  filterStatus.addEventListener('change', () => {
+    renderBookingsTable(getBookings(), filterStatus.value, searchBookings.value);
+  });
+
+  searchGuests.addEventListener('input', () => {
+    renderGuestsTable(getBookings(), searchGuests.value);
+  });
+
+  // Export CSV
+  document.getElementById('crm-export').addEventListener('click', () => {
+    const bookings = getBookings();
+    if (bookings.length === 0) {
+      alert('No bookings to export.');
+      return;
+    }
+
+    const headers = ['Ref', 'Guest', 'Email', 'Phone', 'Room', 'Check-in', 'Check-out', 'Nights', 'Total (KES)', 'Status', 'Created'];
+    const rows = bookings.map(b => [
+      b.ref,
+      b.guestName,
+      b.guestEmail,
+      b.guestPhone,
+      b.room,
+      b.checkin,
+      b.checkout,
+      b.nights,
+      b.total,
+      b.status,
+      b.createdAt
+    ]);
+
+    let csv = headers.join(',') + '\n';
+    rows.forEach(row => {
+      csv += row.map(val => `"${val}"`).join(',') + '\n';
+    });
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `soy-resort-bookings-${new Date().toISOString().split('T')[0]}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  });
+
 });

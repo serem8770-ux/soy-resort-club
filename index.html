@@ -23,12 +23,13 @@
           <span class="hamburger-line"></span>
         </button>
         <nav id="main-nav" class="nav-links">
-          <a href="#hero" class="nav-item">Home</a>
-          <a href="#booking" class="nav-item">Booking</a>
-          <a href="#suites" class="nav-item">Suites</a>
-          <a href="#club" class="nav-item">Club Lounge</a>
+          <a href="#hero" id="nav-link-home" class="nav-item">Home</a>
+          <a href="#booking" id="nav-link-booking" class="nav-item">Booking</a>
+          <a href="#rooms" id="nav-link-rooms" class="nav-item">Rooms</a>
+          <a href="#suites" id="nav-link-suites" class="nav-item">Suites</a>
+          <a href="#club" id="nav-link-club" class="nav-item">Club Lounge</a>
         </nav>
-        <button class="cta-btn magnetic-btn header-cta" onclick="document.getElementById('booking').scrollIntoView({behavior: 'smooth'})">Book Escape</button>
+        <button id="header-book-cta" class="cta-btn magnetic-btn header-cta" onclick="document.getElementById('rooms').scrollIntoView({behavior: 'smooth'})">Book Room</button>
       </header>
 
       <!-- Mobile Nav Overlay -->
@@ -44,7 +45,7 @@
             <div class="subtitle-badge">Eco-Conscious Sanctuary</div>
             <h1 class="fluid-heading">Rejuvenate Your Soul</h1>
             <p class="hero-desc">Experience an organic wellness getaway tailored for the modern luxury traveler.</p>
-            <button class="cta-btn cta-large magnetic-btn" onclick="document.getElementById('booking').scrollIntoView({behavior: 'smooth'})">Discover More</button>
+            <button id="hero-discover-cta" class="cta-btn cta-large magnetic-btn" onclick="document.getElementById('rooms').scrollIntoView({behavior: 'smooth'})">Discover More</button>
           </div>
           <div class="scroll-indicator">
             <div class="scroll-mouse">
@@ -126,21 +127,21 @@
                         <strong>Bamboo Deep Tissue</strong>
                         <em>60 min | Essential Oils</em>
                       </div>
-                      <button class="book-small-btn magnetic-btn">Reserve</button>
+                      <button id="book-bamboo-massage" class="book-small-btn magnetic-btn">Reserve</button>
                     </div>
                     <div class="excursion-item">
                       <div class="excursion-info">
                         <strong>Sunrise Yoga Flow</strong>
                         <em>90 min | Ocean Deck</em>
                       </div>
-                      <button class="book-small-btn magnetic-btn">Reserve</button>
+                      <button id="book-sunrise-yoga" class="book-small-btn magnetic-btn">Reserve</button>
                     </div>
                     <div class="excursion-item">
                       <div class="excursion-info">
                         <strong>Crystal Sound Bath</strong>
                         <em>45 min | Meditation Cave</em>
                       </div>
-                      <button class="book-small-btn magnetic-btn">Reserve</button>
+                      <button id="book-crystal-sound" class="book-small-btn magnetic-btn">Reserve</button>
                     </div>
                   </div>
                 </div>
@@ -148,6 +149,356 @@
             </div>
           </div>
         </section>
+
+        <!-- ============ ROOMS SECTION ============ -->
+        <section id="rooms" class="rooms section-pad">
+          <div class="container">
+            <div class="gallery-header fade-in-up">
+              <div class="section-tag">Accommodation</div>
+              <h2 class="section-title">Our Rooms</h2>
+              <p class="section-subtitle center">Handcrafted organic spaces at KES 2,500 per night. Book your sanctuary below.</p>
+            </div>
+            <div class="rooms-grid stagger-wrapper">
+              <!-- Deluxe Room -->
+              <div class="room-card glass-card stagger-item" style="--delay: 1" data-room="deluxe">
+                <div class="room-image-wrap">
+                  <img src="/deluxe_room.png" alt="Deluxe Room" loading="lazy" />
+                  <div class="room-badge">Popular</div>
+                </div>
+                <div class="room-details">
+                  <h3>Deluxe Room</h3>
+                  <div class="room-meta">
+                    <span class="room-meta-item">👤 2 Guests</span>
+                    <span class="room-meta-item">🛏️ King Bed</span>
+                  </div>
+                  <ul class="room-amenities">
+                    <li>Rain shower</li>
+                    <li>Organic minibar</li>
+                    <li>High-speed WiFi</li>
+                    <li>Room service</li>
+                  </ul>
+                  <div class="room-footer">
+                    <div class="room-price">
+                      <span class="price-amount">KES 2,500</span>
+                      <span class="price-period">/ night</span>
+                    </div>
+                    <button id="book-deluxe-room" class="cta-btn magnetic-btn room-book-btn" data-room="deluxe" data-room-name="Deluxe Room">Book Now</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Garden View -->
+              <div class="room-card glass-card stagger-item" style="--delay: 2" data-room="garden">
+                <div class="room-image-wrap">
+                  <img src="/garden_view.png" alt="Garden View Room" loading="lazy" />
+                </div>
+                <div class="room-details">
+                  <h3>Garden View</h3>
+                  <div class="room-meta">
+                    <span class="room-meta-item">👤 2 Guests</span>
+                    <span class="room-meta-item">🛏️ King Bed</span>
+                  </div>
+                  <ul class="room-amenities">
+                    <li>Garden terrace</li>
+                    <li>Soaking tub</li>
+                    <li>High-speed WiFi</li>
+                    <li>Organic toiletries</li>
+                  </ul>
+                  <div class="room-footer">
+                    <div class="room-price">
+                      <span class="price-amount">KES 2,500</span>
+                      <span class="price-period">/ night</span>
+                    </div>
+                    <button id="book-garden-room" class="cta-btn magnetic-btn room-book-btn" data-room="garden" data-room-name="Garden View">Book Now</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Executive Suite -->
+              <div class="room-card glass-card stagger-item" style="--delay: 3" data-room="executive">
+                <div class="room-image-wrap">
+                  <img src="/executive_suite.png" alt="Executive Suite" loading="lazy" />
+                  <div class="room-badge accent">Premium</div>
+                </div>
+                <div class="room-details">
+                  <h3>Executive Suite</h3>
+                  <div class="room-meta">
+                    <span class="room-meta-item">👤 3 Guests</span>
+                    <span class="room-meta-item">🛏️ King + Sofa</span>
+                  </div>
+                  <ul class="room-amenities">
+                    <li>Living area</li>
+                    <li>Panoramic views</li>
+                    <li>High-speed WiFi</li>
+                    <li>Butler service</li>
+                  </ul>
+                  <div class="room-footer">
+                    <div class="room-price">
+                      <span class="price-amount">KES 2,500</span>
+                      <span class="price-period">/ night</span>
+                    </div>
+                    <button id="book-executive-suite" class="cta-btn magnetic-btn room-book-btn" data-room="executive" data-room-name="Executive Suite">Book Now</button>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Penthouse -->
+              <div class="room-card glass-card stagger-item" style="--delay: 4" data-room="penthouse">
+                <div class="room-image-wrap">
+                  <img src="/penthouse.png" alt="Penthouse Suite" loading="lazy" />
+                  <div class="room-badge accent">Exclusive</div>
+                </div>
+                <div class="room-details">
+                  <h3>Penthouse</h3>
+                  <div class="room-meta">
+                    <span class="room-meta-item">👤 4 Guests</span>
+                    <span class="room-meta-item">🛏️ 2 King Beds</span>
+                  </div>
+                  <ul class="room-amenities">
+                    <li>Private deck</li>
+                    <li>Full kitchen</li>
+                    <li>Plunge pool</li>
+                    <li>Concierge</li>
+                  </ul>
+                  <div class="room-footer">
+                    <div class="room-price">
+                      <span class="price-amount">KES 2,500</span>
+                      <span class="price-period">/ night</span>
+                    </div>
+                    <button id="book-penthouse" class="cta-btn magnetic-btn room-book-btn" data-room="penthouse" data-room-name="Penthouse">Book Now</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ============ BOOKING MODAL ============ -->
+        <div id="booking-modal" class="booking-modal" aria-hidden="true">
+          <div class="booking-modal-overlay"></div>
+          <div class="booking-modal-content glass-card">
+            <button id="booking-modal-close" class="modal-close" aria-label="Close booking modal">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+
+            <!-- Step 1: Guest Details -->
+            <div id="booking-step-1" class="booking-step active">
+              <div class="modal-header">
+                <div class="section-tag">Reservation</div>
+                <h2 class="section-title">Book Your Stay</h2>
+                <div class="selected-room-pill" id="selected-room-display"></div>
+              </div>
+              <form id="booking-form" class="booking-form">
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="guest-name">Full Name</label>
+                    <input type="text" id="guest-name" placeholder="Enter your name" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="guest-email">Email</label>
+                    <input type="email" id="guest-email" placeholder="your@email.com" required />
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="guest-phone">Phone</label>
+                    <input type="tel" id="guest-phone" placeholder="+254 700 000 000" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="guest-count">Guests</label>
+                    <select id="guest-count" required>
+                      <option value="1">1 Guest</option>
+                      <option value="2" selected>2 Guests</option>
+                      <option value="3">3 Guests</option>
+                      <option value="4">4 Guests</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label for="checkin-date">Check-in</label>
+                    <input type="date" id="checkin-date" required />
+                  </div>
+                  <div class="form-group">
+                    <label for="checkout-date">Check-out</label>
+                    <input type="date" id="checkout-date" required />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label for="special-requests">Special Requests</label>
+                  <textarea id="special-requests" rows="3" placeholder="Extra pillows, dietary needs, etc."></textarea>
+                </div>
+
+                <div class="booking-summary glass-card" id="booking-summary">
+                  <div class="summary-row">
+                    <span>Room</span>
+                    <span id="summary-room">—</span>
+                  </div>
+                  <div class="summary-row">
+                    <span>Duration</span>
+                    <span id="summary-nights">—</span>
+                  </div>
+                  <div class="summary-row total">
+                    <span>Total</span>
+                    <span id="summary-total">KES 0</span>
+                  </div>
+                </div>
+
+                <button type="submit" class="cta-btn cta-large magnetic-btn full-width" id="confirm-booking-btn">Confirm Booking</button>
+              </form>
+            </div>
+
+            <!-- Step 2: Confirmation -->
+            <div id="booking-step-2" class="booking-step">
+              <div class="confirmation-content">
+                <div class="confirmation-icon">
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="var(--color-sage)" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9 12l2 2 4-4"/></svg>
+                </div>
+                <h2 class="section-title">Booking Confirmed!</h2>
+                <p class="confirmation-desc">Your organic escape awaits. A confirmation has been sent to your email.</p>
+                <div class="booking-ref glass-card">
+                  <span class="ref-label">Booking Reference</span>
+                  <span class="ref-number" id="booking-ref-number">—</span>
+                </div>
+                <div class="confirmation-details" id="confirmation-details"></div>
+                <button class="cta-btn magnetic-btn" id="close-confirmation">Done</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ CRM PIN MODAL ============ -->
+        <div id="crm-pin-modal" class="booking-modal" aria-hidden="true">
+          <div class="booking-modal-overlay"></div>
+          <div class="booking-modal-content glass-card crm-pin-dialog">
+            <button id="crm-pin-close-btn" class="modal-close crm-pin-close" aria-label="Close">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="pin-content">
+              <div class="confirmation-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="var(--color-sage)" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0110 0v4"/></svg>
+              </div>
+              <h2 class="section-title">Admin Access</h2>
+              <p class="section-subtitle center">Enter your 4-digit PIN to access the CRM dashboard.</p>
+              <div class="pin-input-group">
+                <input type="password" id="crm-pin" class="pin-input" maxlength="4" placeholder="••••" autocomplete="off" />
+              </div>
+              <p id="pin-error" class="pin-error hidden">Incorrect PIN. Please try again.</p>
+              <button class="cta-btn magnetic-btn" id="pin-submit">Unlock Dashboard</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ============ CRM DASHBOARD ============ -->
+        <div id="crm-dashboard" class="crm-dashboard" aria-hidden="true">
+          <div class="crm-header">
+            <div class="crm-header-left">
+              <div class="logo">Soy<span class="logo-accent">.</span> <span class="crm-badge">CRM</span></div>
+            </div>
+            <button class="cta-btn magnetic-btn" id="crm-close">✕ Close</button>
+          </div>
+
+          <div class="crm-body">
+            <!-- Stats Row -->
+            <div class="crm-stats">
+              <div class="crm-stat-card glass-card">
+                <div class="crm-stat-icon">📊</div>
+                <div class="crm-stat-info">
+                  <span class="crm-stat-value" id="crm-total-bookings">0</span>
+                  <span class="crm-stat-label">Total Bookings</span>
+                </div>
+              </div>
+              <div class="crm-stat-card glass-card">
+                <div class="crm-stat-icon">💰</div>
+                <div class="crm-stat-info">
+                  <span class="crm-stat-value" id="crm-total-revenue">KES 0</span>
+                  <span class="crm-stat-label">Total Revenue</span>
+                </div>
+              </div>
+              <div class="crm-stat-card glass-card">
+                <div class="crm-stat-icon">📅</div>
+                <div class="crm-stat-info">
+                  <span class="crm-stat-value" id="crm-pending">0</span>
+                  <span class="crm-stat-label">Pending Check-ins</span>
+                </div>
+              </div>
+              <div class="crm-stat-card glass-card">
+                <div class="crm-stat-icon">👥</div>
+                <div class="crm-stat-info">
+                  <span class="crm-stat-value" id="crm-total-guests">0</span>
+                  <span class="crm-stat-label">Total Guests</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="crm-tabs">
+              <button id="crm-tab-bookings" class="crm-tab active" data-tab="bookings">Bookings</button>
+              <button id="crm-tab-guests" class="crm-tab" data-tab="guests">Guests</button>
+            </div>
+
+            <!-- Bookings Tab -->
+            <div class="crm-tab-content active" id="tab-bookings">
+              <div class="crm-toolbar">
+                <input type="text" class="crm-search" id="crm-search-bookings" placeholder="Search bookings..." />
+                <select class="crm-filter" id="crm-filter-status">
+                  <option value="all">All Status</option>
+                  <option value="confirmed">Confirmed</option>
+                  <option value="checked-in">Checked In</option>
+                  <option value="checked-out">Checked Out</option>
+                  <option value="cancelled">Cancelled</option>
+                </select>
+                <button class="cta-btn magnetic-btn crm-export-btn" id="crm-export">Export CSV</button>
+              </div>
+              <div class="crm-table-wrap">
+                <table class="crm-table" id="crm-bookings-table">
+                  <thead>
+                    <tr>
+                      <th>Ref</th>
+                      <th>Guest</th>
+                      <th>Room</th>
+                      <th>Check-in</th>
+                      <th>Check-out</th>
+                      <th>Total</th>
+                      <th>Status</th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="crm-bookings-body">
+                  </tbody>
+                </table>
+                <div class="crm-empty" id="crm-empty-bookings">
+                  <p>No bookings yet. Bookings will appear here when guests reserve rooms.</p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Guests Tab -->
+            <div class="crm-tab-content" id="tab-guests">
+              <div class="crm-toolbar">
+                <input type="text" class="crm-search" id="crm-search-guests" placeholder="Search guests..." />
+              </div>
+              <div class="crm-table-wrap">
+                <table class="crm-table" id="crm-guests-table">
+                  <thead>
+                    <tr>
+                      <th>Name</th>
+                      <th>Email</th>
+                      <th>Phone</th>
+                      <th>Total Bookings</th>
+                      <th>Total Spent</th>
+                    </tr>
+                  </thead>
+                  <tbody id="crm-guests-body">
+                  </tbody>
+                </table>
+                <div class="crm-empty" id="crm-empty-guests">
+                  <p>No guest records yet.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <section id="suites" class="gallery section-pad">
           <div class="container fade-in-up">
@@ -158,7 +509,7 @@
             </div>
             <div class="masonry-grid stagger-wrapper">
               <div class="gallery-item large stagger-item" style="--delay: 1">
-                <img src="/suite.png" alt="Luxury eco-friendly suite" class="parallax-layer" data-speed="0.1" />
+                <img src="/suite.png" alt="Luxury eco-friendly suite" class="parallax-layer" data-speed="0.1" loading="lazy" />
                 <div class="overlay glass-overlay">
                   <h3>The Bamboo Suite</h3>
                   <p>Panoramic nature views.</p>
@@ -166,7 +517,7 @@
                 </div>
               </div>
               <div class="gallery-item stagger-item" style="--delay: 2">
-                <img src="/ocean_suite.png" alt="The Ocean Villa" class="parallax-layer" data-speed="0.12" />
+                <img src="/ocean_suite.png" alt="The Ocean Villa" class="parallax-layer" data-speed="0.12" loading="lazy" />
                 <div class="overlay glass-overlay">
                   <h3>The Ocean Villa</h3>
                   <p>Unobstructed coastal panoramas.</p>
@@ -186,7 +537,7 @@
             </div>
             <div class="gallery-grid full-width">
               <div class="gallery-item">
-                <img src="/lounge.png" alt="Luxurious private club lounge" class="parallax-layer" data-speed="0.15" />
+                <img src="/lounge.png" alt="Luxurious private club lounge" class="parallax-layer" data-speed="0.15" loading="lazy" />
                 <div class="overlay glass-overlay">
                   <h3>The Organic Lounge</h3>
                   <p>Hand-crafted botanical refreshments.</p>
@@ -253,22 +604,23 @@
               <h3 class="logo">Soy<span class="logo-accent">.</span></h3>
               <p class="footer-tagline">Rejuvenate your soul.</p>
               <div class="social-links">
-                <a href="#" class="social-icon" aria-label="Instagram">
+                <a href="#" id="social-instagram" class="social-icon" aria-label="Instagram">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1.5"/></svg>
                 </a>
-                <a href="#" class="social-icon" aria-label="Twitter">
+                <a href="#" id="social-twitter" class="social-icon" aria-label="Twitter">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z"/></svg>
                 </a>
-                <a href="#" class="social-icon" aria-label="Facebook">
+                <a href="#" id="social-facebook" class="social-icon" aria-label="Facebook">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
                 </a>
               </div>
             </div>
             <div class="links">
               <h4>Sanctuary</h4>
-              <p><a href="#booking">Book Excursions</a></p>
-              <p><a href="#suites">Our Suites</a></p>
-              <p><a href="#club">Club Lounge</a></p>
+              <p><a href="#booking" id="footer-link-booking">Book Excursions</a></p>
+              <p><a href="#rooms" id="footer-link-rooms">Our Rooms</a></p>
+              <p><a href="#suites" id="footer-link-suites">Our Suites</a></p>
+              <p><a href="#club" id="footer-link-club">Club Lounge</a></p>
             </div>
             <div class="contact">
               <h4>Contact</h4>
@@ -281,8 +633,9 @@
               <p class="newsletter-desc">Join our exclusive community for special offers and wellness insights.</p>
               <div class="input-group">
                 <input type="email" placeholder="Email Address" title="Newsletter Email" id="newsletter-email" />
-                <button class="magnetic-btn">Join</button>
+                <button id="newsletter-submit-btn" class="magnetic-btn">Join</button>
               </div>
+              <a href="#" class="admin-link" id="crm-admin-link">🔐 Staff Portal</a>
             </div>
           </div>
           <div class="legal">
