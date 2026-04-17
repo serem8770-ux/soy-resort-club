@@ -316,10 +316,10 @@
                 </div>
                 <div class="form-row">
                   <div class="form-group">
-                    <label for="checkin-date">Check-in</label>
+                    <label for="checkin-date" id="checkin-label">Check-in</label>
                     <input type="date" id="checkin-date" required />
                   </div>
-                  <div class="form-group">
+                  <div class="form-group" id="checkout-group">
                     <label for="checkout-date">Check-out</label>
                     <input type="date" id="checkout-date" required />
                   </div>
@@ -331,10 +331,10 @@
 
                 <div class="booking-summary glass-card" id="booking-summary">
                   <div class="summary-row">
-                    <span>Room</span>
+                    <span id="summary-room-label">Room</span>
                     <span id="summary-room">—</span>
                   </div>
-                  <div class="summary-row">
+                  <div class="summary-row" id="summary-nights-row">
                     <span>Duration</span>
                     <span id="summary-nights">—</span>
                   </div>

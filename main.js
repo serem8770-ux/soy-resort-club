@@ -306,8 +306,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const confirmationDetails = document.getElementById('confirmation-details');
   const closeConfirmation = document.getElementById('close-confirmation');
 
+  const checkoutGroup = document.getElementById('checkout-group');
+  const checkinLabel = document.getElementById('checkin-label');
+  const summaryNightsRow = document.getElementById('summary-nights-row');
+  const summaryRoomLabel = document.getElementById('summary-room-label');
+
   let selectedRoom = '';
   let selectedRoomName = '';
+  let isExcursion = false;
 
   // Set minimum date to today
   const todayStr = today.toISOString().split('T')[0];
@@ -320,11 +326,32 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       selectedRoom = btn.dataset.room;
       selectedRoomName = btn.dataset.roomName;
+      isExcursion = ['massage', 'yoga', 'sound-bath'].includes(selectedRoom);
+      
+      if (isExcursion) {
+        checkinLabel.textContent = 'Date';
+        checkoutGroup.style.display = 'none';
+        checkoutInput.removeAttribute('required');
+        summaryNightsRow.style.display = 'none';
+        summaryRoomLabel.textContent = 'Excursion';
+      } else {
+        checkinLabel.textContent = 'Check-in';
+        checkoutGroup.style.display = 'flex';
+        checkoutInput.setAttribute('required', 'true');
+        summaryNightsRow.style.display = 'flex';
+        summaryRoomLabel.textContent = 'Accommodation';
+      }
+
       selectedRoomDisplay.textContent = selectedRoomName;
       summaryRoom.textContent = selectedRoomName;
       openModal(bookingModal);
       step1.classList.add('active');
       step2.classList.remove('active');
+      
+      // Update form context
+      checkinInput.value = '';
+      checkoutInput.value = '';
+      updateSummary();
     });
   });
 
@@ -346,16 +373,24 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Calculate nights and total
   function updateSummary() {
-    const checkin = new Date(checkinInput.value);
-    const checkout = new Date(checkoutInput.value);
-    if (checkinInput.value && checkoutInput.value && checkout > checkin) {
-      const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
-      const total = nights * ROOM_RATE;
-      summaryNights.textContent = `${nights} night${nights > 1 ? 's' : ''}`;
-      summaryTotal.textContent = `KES ${total.toLocaleString()}`;
+    if (isExcursion) {
+      if (checkinInput.value) {
+        summaryTotal.textContent = `KES ${ROOM_RATE.toLocaleString()}`;
+      } else {
+        summaryTotal.textContent = 'KES 0';
+      }
     } else {
-      summaryNights.textContent = '—';
-      summaryTotal.textContent = 'KES 0';
+      const checkin = new Date(checkinInput.value);
+      const checkout = new Date(checkoutInput.value);
+      if (checkinInput.value && checkoutInput.value && checkout > checkin) {
+        const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+        const total = nights * ROOM_RATE;
+        summaryNights.textContent = `${nights} night${nights > 1 ? 's' : ''}`;
+        summaryTotal.textContent = `KES ${total.toLocaleString()}`;
+      } else {
+        summaryNights.textContent = '—';
+        summaryTotal.textContent = 'KES 0';
+      }
     }
   }
 
@@ -389,15 +424,21 @@ document.addEventListener('DOMContentLoaded', () => {
     e.preventDefault();
 
     const checkin = new Date(checkinInput.value);
-    const checkout = new Date(checkoutInput.value);
+    let nights = 1;
+    let total = ROOM_RATE;
+    let checkoutValue = checkinInput.value;
 
-    if (checkout <= checkin) {
-      alert('Check-out date must be after check-in date.');
-      return;
+    if (!isExcursion) {
+      const checkout = new Date(checkoutInput.value);
+      if (checkout <= checkin) {
+        alert('Check-out date must be after check-in date.');
+        return;
+      }
+      nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
+      total = nights * ROOM_RATE;
+      checkoutValue = checkoutInput.value;
     }
 
-    const nights = Math.ceil((checkout - checkin) / (1000 * 60 * 60 * 24));
-    const total = nights * ROOM_RATE;
     const ref = generateRef();
 
     const booking = {
@@ -410,7 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
       room: selectedRoomName,
       roomType: selectedRoom,
       checkin: checkinInput.value,
-      checkout: checkoutInput.value,
+      checkout: checkoutValue,
       nights: nights,
       total: total,
       specialRequests: document.getElementById('special-requests').value.trim(),
@@ -425,10 +466,10 @@ document.addEventListener('DOMContentLoaded', () => {
     bookingRefNumber.textContent = ref;
     confirmationDetails.innerHTML = `
       <strong>Guest:</strong> ${escapeHtml(booking.guestName)}<br>
-      <strong>Room:</strong> ${escapeHtml(booking.room)}<br>
-      <strong>Check-in:</strong> ${escapeHtml(formatDate(booking.checkin))}<br>
-      <strong>Check-out:</strong> ${escapeHtml(formatDate(booking.checkout))}<br>
-      <strong>Duration:</strong> ${nights} night${nights > 1 ? 's' : ''}<br>
+      <strong>${isExcursion ? 'Excursion' : 'Room'}:</strong> ${escapeHtml(booking.room)}<br>
+      <strong>${isExcursion ? 'Date' : 'Check-in'}:</strong> ${escapeHtml(formatDate(booking.checkin))}<br>
+      ${!isExcursion ? `<strong>Check-out:</strong> ${escapeHtml(formatDate(booking.checkout))}<br>
+      <strong>Duration:</strong> ${nights} night${nights > 1 ? 's' : ''}<br>` : ''}
       <strong>Total:</strong> KES ${total.toLocaleString()}
     `;
 
