@@ -145,8 +145,20 @@ document.addEventListener('DOMContentLoaded', () => {
           const rect = layer.getBoundingClientRect();
           // Only apply parallax when element is in or near viewport
           if (rect.bottom > -200 && rect.top < window.innerHeight + 200) {
-            const yPos = -(scrollY * speed);
-            layer.style.transform = `translate3d(0, ${yPos}px, 0)`;
+            const isHero = layer.classList.contains('hero-image-container') || layer.classList.contains('bg-media');
+            if (window.innerWidth <= 768 && !isHero) {
+              layer.style.transform = `translate3d(0, 0, 0)`;
+            } else {
+              let yPos;
+              if (isHero) {
+                yPos = -(scrollY * speed);
+              } else {
+                const windowCenter = window.innerHeight / 2;
+                const elementCenter = rect.top + (rect.height / 2);
+                yPos = (elementCenter - windowCenter) * speed;
+              }
+              layer.style.transform = `scale(1.15) translate3d(0, ${yPos}px, 0)`;
+            }
           }
         });
         ticking = false;
@@ -326,7 +338,7 @@ document.addEventListener('DOMContentLoaded', () => {
       e.stopPropagation();
       selectedRoom = btn.dataset.room;
       selectedRoomName = btn.dataset.roomName;
-      isExcursion = ['massage', 'yoga', 'sound-bath'].includes(selectedRoom);
+      isExcursion = ['massage', 'yoga', 'sound-bath', 'organic-lounge'].includes(selectedRoom);
       
       if (isExcursion) {
         checkinLabel.textContent = 'Date';
@@ -804,5 +816,31 @@ document.addEventListener('DOMContentLoaded', () => {
     a.click();
     URL.revokeObjectURL(url);
   });
+
+  // =============================================================
+  //  NEWSLETTER SUBSCRIPTION
+  // =============================================================
+  const newsletterSubmitBtn = document.getElementById('newsletter-submit-btn');
+  const newsletterEmail = document.getElementById('newsletter-email');
+
+  if (newsletterSubmitBtn && newsletterEmail) {
+    newsletterSubmitBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const email = newsletterEmail.value.trim();
+      if (email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+        newsletterSubmitBtn.textContent = 'Joined!';
+        newsletterSubmitBtn.style.backgroundColor = 'var(--color-sage)';
+        newsletterSubmitBtn.style.color = 'white';
+        newsletterEmail.value = '';
+        setTimeout(() => {
+          newsletterSubmitBtn.textContent = 'Join';
+          newsletterSubmitBtn.style.backgroundColor = '';
+          newsletterSubmitBtn.style.color = '';
+        }, 3000);
+      } else {
+        alert('Please enter a valid email address to join our newsletter.');
+      }
+    });
+  }
 
 });

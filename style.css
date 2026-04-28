@@ -1496,14 +1496,18 @@ main section {
   height: 500px;
   object-fit: cover;
   display: block;
-  transition: transform 1.5s cubic-bezier(0.25, 0.8, 0.25, 1);
+  /* Reduced transition time for transform to avoid parallax sliding lag */
+  transition: transform 0.1s linear, filter 1.5s;
 }
 
 .gallery-item.large img {
   height: 560px;
 }
 
-.gallery-item:hover img { transform: scale(1.05); }
+/* On hover, increase brightness slightly instead of scale to avoid inline transform conflicts */
+.gallery-item:hover img { 
+  filter: brightness(1.1); 
+}
 
 .glass-overlay {
   position: absolute;
